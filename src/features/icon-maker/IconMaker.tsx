@@ -1,12 +1,10 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { Download, Copy, Check, AlertCircle, Search, Package } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
-import { IconSettings } from './types';
-import { ExportState } from '../../types';
+import { IconSettings, ExportState, BulkExportState } from './types';
 import { ICON_CATEGORIES } from '../../logic/constants';
 import { exportToPng, copyToClipboard, generateFilename } from '../../logic/image-export';
 import { exportAllIconsToZip } from '../../logic/bulk-icon-export';
-
 
 export default function IconMaker() {
   const [selectedIcon, setSelectedIcon] = useState('Heart');
