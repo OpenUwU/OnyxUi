@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Beautiful code snippets with AMOLED dark theme",
+  "description": "Beautiful code snippets ",
   "keywords": [
     "code",
     "snippets",
@@ -14,15 +14,15 @@
     "react",
     "typescript"
   ],
-  "author": "Your Name <your.email@example.com>",
+  "author": "OpenUwU",
   "license": "MIT",
-  "homepage": "https://uwusnippets.vercel.app",
+  "homepage": "https://github.com/OpenUwU/OnyxUi/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/uwusnippets.git"
+    "url": "https://github.com/OpenUwU/OnyxUi.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/uwusnippets/issues"
+    "url": "https://github.com/OpenUwU/OnyxUi/"
   },
   "scripts": {
     "dev": "vite",
