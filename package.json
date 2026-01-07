@@ -1,9 +1,9 @@
 {
-  "name": "uwusnippets",
+  "name": "onyx-ui",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Beautiful code snippets",
+  "description": "Beautiful code snippets with AMOLED dark theme",
   "keywords": [
     "code",
     "snippets",

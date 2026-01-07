@@ -1,147 +1,125 @@
 import { toPng } from 'html-to-image';
+
 export async function exportToPng(element: HTMLElement, filename: string): Promise<void> {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) throw new Error('Canvas context not available');
+    try {
+        // Wait for fonts to load
+        await document.fonts.ready;
 
-    const rect = element.getBoundingClientRect();
-    const scale = 2;
-    canvas.width = rect.width * scale;
-    canvas.height = rect.height * scale;
-    ctx.scale(scale, scale);
+        const dataUrl = await toPng(element, {
+            quality: 1,
+            pixelRatio: 2,
+            cacheBust: true,
+            style: {
+                transform: 'scale(1)',
+                transformOrigin: 'top left',
+            },
+            filter: (node) => {
+                // Exclude any elements that might cause issues
+                if (node.classList?.contains('no-export')) {
+                    return false;
+                }
 
-    const svg = element.querySelector('svg');
-    if (!svg) throw new Error('No SVG found in element');
+                // Exclude Google Fonts and other cross-origin stylesheets
+                if (node.tagName === 'LINK' &&
+                    node instanceof HTMLLinkElement &&
+                    node.rel === 'stylesheet' &&
+                    (node.href.includes('fonts.googleapis.com') ||
+                        node.href.includes('fonts.gstatic.com'))) {
+                    return false;
+                }
 
-    const computedStyle = window.getComputedStyle(element);
-    const bgType = element.style.background || element.style.backgroundColor;
-    
-    if (bgType && bgType !== 'transparent') {
-        if (bgType.includes('gradient')) {
-            const match = bgType.match(/linear-gradient\([\d.]+deg,\s*([^,]+),\s*([^)]+)\)/);
-            if (match) {
-                const gradient = ctx.createLinearGradient(0, 0, rect.width, rect.height);
-                gradient.addColorStop(0, match[1].trim());
-                gradient.addColorStop(1, match[2].trim());
-                ctx.fillStyle = gradient;
+                return true;
             }
-        } else {
-            ctx.fillStyle = element.style.backgroundColor;
+        });
+
+        // Validate the data URL
+        if (!dataUrl || dataUrl === 'data:,') {
+            throw new Error('Failed to generate image data');
         }
-        
-        const borderRadius = parseFloat(element.style.borderRadius || '0');
-        if (borderRadius > 0) {
-            ctx.beginPath();
-            ctx.roundRect(0, 0, rect.width, rect.height, borderRadius);
-            ctx.fill();
-        } else {
-            ctx.fillRect(0, 0, rect.width, rect.height);
-        }
-    }
 
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(svgBlob);
-
-    const img = new Image();
-    await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = reject;
-        img.src = url;
-    });
-
-    const padding = parseFloat(element.style.padding || '0');
-    ctx.drawImage(img, padding, padding);
-    URL.revokeObjectURL(url);
-
-    canvas.toBlob((blob) => {
-        if (!blob) throw new Error('Failed to create blob');
         const link = document.createElement('a');
         link.download = filename;
-        link.href = URL.createObjectURL(blob);
+        link.href = dataUrl;
+        document.body.appendChild(link);
         link.click();
-        URL.revokeObjectURL(link.href);
-    }, 'image/png');
+        document.body.removeChild(link);
+
+
+    } catch (error) {
+        console.error('Error exporting image:', error);
+        throw new Error(`Failed to export image: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
 }
 
 export async function copyToClipboard(element: HTMLElement): Promise<void> {
-    if (!navigator.clipboard?.write) {
-        throw new Error('Clipboard API not available');
-    }
+    try {
+        // Check if clipboard API is available
+        if (!navigator.clipboard || !navigator.clipboard.write) {
+            throw new Error('Clipboard API not available');
+        }
 
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) throw new Error('Canvas context not available');
+        // Wait for fonts to load
+        await document.fonts.ready;
 
-    const rect = element.getBoundingClientRect();
-    const scale = 2;
-    canvas.width = rect.width * scale;
-    canvas.height = rect.height * scale;
-    ctx.scale(scale, scale);
+        const dataUrl = await toPng(element, {
+            quality: 1,
+            pixelRatio: 2,
+            cacheBust: true,
+            style: {
+                transform: 'scale(1)',
+                transformOrigin: 'top left',
+            },
+            filter: (node) => {
+                // Exclude any elements that might cause issues
+                if (node.classList?.contains('no-export')) {
+                    return false;
+                }
 
-    const svg = element.querySelector('svg');
-    if (!svg) throw new Error('No SVG found in element');
+                // Exclude Google Fonts and other cross-origin stylesheets
+                if (node.tagName === 'LINK' &&
+                    node instanceof HTMLLinkElement &&
+                    node.rel === 'stylesheet' &&
+                    (node.href.includes('fonts.googleapis.com') ||
+                        node.href.includes('fonts.gstatic.com'))) {
+                    return false;
+                }
 
-    const bgType = element.style.background || element.style.backgroundColor;
-    
-    if (bgType && bgType !== 'transparent') {
-        if (bgType.includes('gradient')) {
-            const match = bgType.match(/linear-gradient\([\d.]+deg,\s*([^,]+),\s*([^)]+)\)/);
-            if (match) {
-                const gradient = ctx.createLinearGradient(0, 0, rect.width, rect.height);
-                gradient.addColorStop(0, match[1].trim());
-                gradient.addColorStop(1, match[2].trim());
-                ctx.fillStyle = gradient;
+                return true;
             }
-        } else {
-            ctx.fillStyle = element.style.backgroundColor;
+        });
+
+        // Validate the data URL
+        if (!dataUrl || dataUrl === 'data:,') {
+            throw new Error('Failed to generate image data');
         }
-        
-        const borderRadius = parseFloat(element.style.borderRadius || '0');
-        if (borderRadius > 0) {
-            ctx.beginPath();
-            ctx.roundRect(0, 0, rect.width, rect.height, borderRadius);
-            ctx.fill();
-        } else {
-            ctx.fillRect(0, 0, rect.width, rect.height);
+
+        // Convert data URL to blob
+        const response = await fetch(dataUrl);
+        if (!response.ok) {
+            throw new Error('Failed to convert image data');
         }
+
+        const blob = await response.blob();
+
+        // Copy to clipboard
+        await navigator.clipboard.write([
+            new ClipboardItem({
+                'image/png': blob
+            })
+        ]);
+
+
+    } catch (error) {
+        console.error('Error copying to clipboard:', error);
+        throw new Error(`Failed to copy to clipboard: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
+}
 
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(svgBlob);
-
-    const img = new Image();
-    await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = reject;
-        img.src = url;
-    });
-
-    const padding = parseFloat(element.style.padding || '0');
-    ctx.drawImage(img, padding, padding);
-    URL.revokeObjectURL(url);
-
-    const blob = await new Promise<Blob>((resolve, reject) => {
-        canvas.toBlob((blob) => {
-            if (blob) resolve(blob);
-            else reject(new Error('Failed to create blob'));
-        }, 'image/png');
-    });
-
-    await navigator.clipboard.write([
-        new ClipboardItem({ 'image/png': blob })
-    ]);
+export function getFileExtension(filename: string): string {
+    return filename.split('.').pop()?.toLowerCase() || '';
 }
 
 export function generateFilename(prefix: string, extension: string = 'png'): string {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
     return `${prefix}-${timestamp}.${extension}`;
 }
-export function getFileExtension(filename: string): string {
-    return filename.split('.').pop()?.toLowerCase() || '';
-}
-
-
-
-

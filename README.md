@@ -1,4 +1,4 @@
-# UwUSnippets
+# OnyxUi
 
 > Beautiful code snippets, icons, and color palettes with stunning OKLCH themes
 

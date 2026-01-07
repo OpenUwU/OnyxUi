@@ -14,15 +14,3 @@ export interface IconCategory {
     name: string;
     icons: string[];
 }
-
-export interface ExportState {
-    isExporting: boolean;
-    success: boolean;
-    error: string | null;
-}
-
-export interface BulkExportState {
-    isExporting: boolean;
-    progress: number;
-    total: number;
-}

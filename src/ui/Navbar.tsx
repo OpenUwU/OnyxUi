@@ -13,10 +13,10 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
                     {/* Logo */}
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 lg:w-11 lg:h-11 rounded-xl flex items-center justify-center overflow-hidden">
-                            <img src="/logo.png" alt="UwUSnippets Logo" className="w-full h-full object-cover scale-[2.0]" />
+                            <img src="/logo.png" alt="OnyxUi Logo" className="w-full h-full object-cover scale-[2.0]" />
                         </div>
                         <div>
-                            <h1 className="text-sm lg:text-base font-bold text-white tracking-tight">UwUSnippets</h1>
+                            <h1 className="text-sm lg:text-base font-bold text-white tracking-tight">OnyxUi</h1>
                             <p className="text-[10px] lg:text-xs text-zinc-400 hidden sm:block">Beautiful code snippets</p>
                         </div>
                     </div>
